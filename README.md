@@ -14,3 +14,5 @@ As a side project, I'd also like to have an importable markdown banner showing s
 Nevermind... As with most not-bad ideas I get, its already been implemented.
 
 [![Kristoferfannars's LeetCode stats](https://leetcode-stats-six.vercel.app/?username=kristoferfannar&theme=dark)](https://github.com/KnlnKS/leetcode-stats)
+
+Thanks to [KnlnKS](https://github.com/KnlnKS) for having this brilliant idea 3 years before me.
