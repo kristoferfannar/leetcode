@@ -6,6 +6,10 @@ import (
 )
 
 func twoSum(nums []int, target int) []int {
+	return twoSumHashMap(nums, target)
+}
+
+func twoSumSlice(nums []int, target int) []int {
 	// return slices.twoSum(nums, target) // oops
 
 	// create a sorted copy of the original array
@@ -28,7 +32,31 @@ func twoSum(nums []int, target int) []int {
 		}
 	}
 
-	panic("no solution found")
+	panic("no solution found using slices")
+}
+
+func twoSumHashMap(nums []int, target int) []int {
+	// create a hash map
+	//   key: array value
+	// value: array index
+	hMap := make(map[int]int)
+
+	for i, num := range nums {
+		j := hMap[target-num]
+		if j != 0 {
+			// decremenet indices back to their real values...
+			// ... explained below
+			return []int{j - 1, i}
+		} else {
+			// value returned for hash map miss is zero,
+			// therefore, increment all indices by one
+			// so that a solution using the first index (0)
+			// can be used
+			hMap[num] = i + 1
+		}
+	}
+
+	panic("no solution found using maps")
 }
 
 func main() {
