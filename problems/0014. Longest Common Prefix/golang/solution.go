@@ -17,6 +17,9 @@ func main() {
 
 // Sort the strings, by definition the first and the last strings must have the worst (shortest) common prefix
 // therefore, we only have to compare their prefixes
+//
+// Not sure whether this is actually better than just brute forcing: checking position i for each of the strings
+// The best case scenario is much better for that one, and I feel like the worst case isn't actually worse.
 func longestCommonPrefix(strs []string) string {
 	slices.Sort(strs)
 
