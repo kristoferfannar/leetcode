@@ -3,14 +3,8 @@ from typing import List
 
 class Solution:
     def kidsWithCandies(self, candies: List[int], extraCandies: int) -> List[bool]:
-        maxCandies = max(candies)
-
-        greatest = [False] * len(candies)
-
-        for idx in range(len(greatest)):
-            greatest[idx] = candies[idx] + extraCandies >= maxCandies
-
-        return greatest
+        maxCandy = max(candies)
+        return [candies[i] + extraCandies >= maxCandy for i in range(len(candies))]
 
 
 if __name__ == "__main__":
