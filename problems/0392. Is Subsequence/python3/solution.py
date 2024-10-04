@@ -1,11 +1,13 @@
 class Solution:
     def isSubsequence(self, s: str, t: str) -> bool:
-        while s != "" and t != "":
-            if s[0] == t[0]:
-                s = s[1:]
-            t = t[1:]
+        s_i = 0
+        t_i = 0
+        while s_i < len(s) and t_i < len(t):
+            if s[s_i] == t[t_i]:
+                s_i += 1
+            t_i += 1
 
-        return s == ""
+        return s_i == len(s)
 
 
 if __name__ == "__main__":
