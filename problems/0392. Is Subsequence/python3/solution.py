@@ -3,6 +3,10 @@ class Solution:
         s_i = 0
         t_i = 0
         while s_i < len(s) and t_i < len(t):
+            # no way for the rest of s to fit in the rest of t
+            if len(s) - s_i > len(t) - t_i:
+                return False
+
             if s[s_i] == t[t_i]:
                 s_i += 1
             t_i += 1
