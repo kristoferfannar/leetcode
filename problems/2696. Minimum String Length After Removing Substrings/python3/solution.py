@@ -1,16 +1,18 @@
 class Solution:
     def minLength(self, s: str) -> int:
-        idx = 0
+        stack = []
 
-        while idx < len(s) - 1:
-            if s[idx : idx + 2] in ["AB", "CD"]:
-                s = s[:idx] + s[idx + 2 :]
-                idx -= 1
-                idx = max(0, idx)  # don't set idx = -1 if substrings found on idx = 0
+        for char in s:
+            if len(stack) == 0:
+                stack.append(char)
+            elif char == "B" and stack[-1] == "A":
+                stack.pop()
+            elif char == "D" and stack[-1] == "C":
+                stack.pop()
             else:
-                idx += 1
+                stack.append(char)
 
-        return len(s)
+        return len(stack)
 
 
 if __name__ == "__main__":
