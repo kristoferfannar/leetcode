@@ -25,12 +25,7 @@ class Solution:
         return this
 
     def minCostClimbingStairs(self, cost: List[int]) -> int:
-        lowest = min(self.minCost(cost), self.minCost(cost[:-1]))
-
-        for k, v in sorted(self.cost_dict.items(), key=lambda x: x[0]):
-            print(k, v)
-
-        return lowest
+        return min(self.minCost(cost), self.minCost(cost[:-1]))
 
 
 if __name__ == "__main__":
