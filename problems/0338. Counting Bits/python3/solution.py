@@ -2,20 +2,11 @@ from typing import List
 
 
 class Solution:
-    def getBits(self, i: int) -> int:
-        ones = 0
-
-        while i > 0:
-            ones += i & 1
-            i = i >> 1
-
-        return ones
-
     def countBits(self, n: int) -> List[int]:
-        bits = []
+        bits = [0] * (n + 1)
 
         for i in range(n + 1):
-            bits.append(self.getBits(i))
+            bits[i] = bits[i >> 1] + (i & 1)
 
         return bits
 
