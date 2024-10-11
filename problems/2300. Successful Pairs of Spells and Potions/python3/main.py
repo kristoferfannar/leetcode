@@ -3,29 +3,17 @@ from math import ceil
 
 
 def search(spotions: List[int], target) -> int:
-    if len(spotions) == 1:
-        return int(target <= spotions[0])
+    lo, hi = 0, len(spotions)
 
-    def bounded_search(spotions, lo, hi, target) -> int:
-        mid = int((hi + lo) / 2)
-
-        if spotions[mid - 1] < target and target <= spotions[mid]:
-            return mid
-
-        if lo == hi:
-            if lo == len(spotions) - 1:
-                return len(spotions)
-            if hi == 1:
-                return 0
-            return mid
+    while lo < hi:
+        mid = lo + (hi - lo) // 2
 
         if target <= spotions[mid]:
-            return bounded_search(spotions, lo, mid, target)
+            hi = mid
+        else:
+            lo = mid + 1
 
-        return bounded_search(spotions, mid + 1, hi, target)
-
-    mid_idx = bounded_search(spotions, 0, len(spotions) - 1, target)
-    return len(spotions) - mid_idx
+    return len(spotions) - lo
 
 
 class Solution:
