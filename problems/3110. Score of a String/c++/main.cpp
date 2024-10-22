@@ -1,8 +1,6 @@
-#include <cmath>
-#include <iostream>
-#include <string>
-
+#include <bits/stdc++.h>
 using namespace std;
+
 class Solution {
 public:
   int scoreOfString(string s) {
@@ -11,12 +9,8 @@ public:
     for (int i = 0; i < s.size() - 1; i++) {
       score += abs(s[i] - s[i + 1]);
     }
-    cout << "score: " << score << "\n";
     return score;
   }
 };
 
-int main() {
-  auto s = Solution();
-  s.scoreOfString("hello");
-}
+int main() { assert(Solution().scoreOfString("hello") == 13); }
