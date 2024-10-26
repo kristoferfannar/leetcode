@@ -1,4 +1,9 @@
 from typing import Optional, List
+from queue import Queue
+from collections import deque
+
+from test import lis as LIS
+from queries import queries as QUERIES
 
 
 # Definition for a binary tree node.
@@ -15,8 +20,8 @@ class TreeNode:
 class Solution:
     def create_mapping(
         self, root: Optional[TreeNode]
-    ) -> dict[int, tuple[TreeNode, TreeNode, int]]:
-        mapping: dict[int, tuple[TreeNode, TreeNode, int]] = dict()
+    ) -> dict[int, tuple[TreeNode, TreeNode, int, int]]:
+        mapping: dict[int, tuple[TreeNode, TreeNode, int, int]] = dict()
 
         if root is None:
             return mapping
@@ -34,32 +39,52 @@ class Solution:
 
             idx += 1
 
-        # recursively find node's height
-        def node_height(node, parent):
-            if not node.left and not node.right:
-                height = 0
-            else:
-                l = r = 0
+        def node_height2(root):
+            nodes_pars = [(root, root)]
+            # nodes = [root]
 
-                if node.left:
-                    l = node_height(node.left, node)
+            nodes = Queue()
+            nodes.put(root)
 
-                if node.right:
-                    r = node_height(node.right, node)
+            depths = {root.val: 0}
 
-                height = max(l, r) + 1
+            while not nodes.empty():
+                # curr = nodes.pop(0)
+                curr = nodes.get()
 
-            mapping[node.val] = (node, parent, height)
-            return height
+                if curr.left:
+                    nodes_pars.append((curr.left, curr))
+                    # nodes.append(curr.left)
+                    nodes.put(curr.left)
+                    depths[curr.left.val] = depths[curr.val] + 1
+                if curr.right:
+                    nodes_pars.append((curr.right, curr))
+                    # nodes.append(curr.right)
+                    nodes.put(curr.right)
+                    depths[curr.right.val] = depths[curr.val] + 1
 
-        node_height(root, root)
+            while nodes_pars:
+                last, par = nodes_pars.pop()
+
+                if not last.left and not last.right:
+                    mapping[last.val] = (last, par, 0, depths[last.val])
+
+                else:
+                    l = r = -1
+                    if last.left:
+                        l = mapping[last.left.val][2]
+                    if last.right:
+                        r = mapping[last.right.val][2]
+                    mapping[last.val] = (last, par, max(l, r) + 1, depths[last.val])
+
+        node_height2(root)
 
         return mapping
 
     def get_ans(
-        self, mapping: dict[int, tuple[TreeNode, TreeNode, int]], q: int
+        self, mapping: dict[int, tuple[TreeNode, TreeNode, int, int]], q: int
     ) -> int:
-        node, parent, _ = mapping[q]
+        node, parent, _, depth = mapping[q]
         # new node's height will be 0
         height = -1
 
@@ -91,7 +116,7 @@ class Solution:
             height = get_new_parent_height(parent, q, height)
             # get the parent's parent,
             # move up a generation
-            node, parent, _ = mapping[parent.val]
+            node, parent, _, depth = mapping[parent.val]
             q = node.val
 
         return height
@@ -103,14 +128,27 @@ class Solution:
         #     print(f"{k} -> ({v[1].val}, {v[2]})")
         # print()
 
+        if not root:
+            raise Exception("no")
+
         ans = []
 
         for q in queries:
-            ans.append(self.get_ans(mapping, q))
+            limb = mapping[q][2] + mapping[q][3]
+
+            # print(f"limb-{limb} root_len-{mapping[root.val][2]}")
+            if limb < mapping[root.val][2]:
+                ans.append(mapping[root.val][2])
+                # print("optimized")
+            else:
+                ans.append(self.get_ans(mapping, q))
+                # print("not optimized")
 
         return ans
 
 
+# expects None nodes to have reserved indexes
+# with their None children
 def to_tn(lis) -> Optional[TreeNode]:
 
     def create_node(lis, i) -> Optional[TreeNode]:
@@ -126,6 +164,33 @@ def to_tn(lis) -> Optional[TreeNode]:
         return TreeNode(lis[i - 1], l, r)
 
     return create_node(lis, 1)
+
+
+# does not
+def to_tn_2(lis) -> Optional[TreeNode]:
+    if not lis:
+        return None
+
+    root = TreeNode(lis[0])
+    queue = deque([root])
+    i = 1  # Start from the first child index
+
+    while queue and i < len(lis):
+        current = queue.popleft()
+
+        # Add the left child if it's not None
+        if i < len(lis) and lis[i] is not None:
+            current.left = TreeNode(lis[i])
+            queue.append(current.left)
+        i += 1  # Move to the next element in the list
+
+        # Add the right child if it's not None
+        if i < len(lis) and lis[i] is not None:
+            current.right = TreeNode(lis[i])
+            queue.append(current.right)
+        i += 1  # Move to the next element in the list
+
+    return root
 
 
 def from_tn(root: Optional[TreeNode]) -> List[Optional[int]]:
@@ -149,25 +214,35 @@ def from_tn(root: Optional[TreeNode]) -> List[Optional[int]]:
 
 
 if __name__ == "__main__":
-    lis = [1, 3, 4, 2, None, 6, 5, None, None, None, None, None, None, None, 7]
-    tn = to_tn(lis)
+    # lis = [1, 3, 4, 2, None, 6, 5, None, None, None, None, None, 7]
+    # tn = to_tn_2(lis)
+    # s = Solution().treeQueries(tn, [4])
+    # print(s)
+    # assert s == [2]
 
-    s = Solution().treeQueries(tn, [4])
-    print(s)
-    assert s == [2]
+    # lis = [5, 8, 9, 2, 1, 3, 7, 4, 6]
+    # tn = to_tn_2(lis)
+    # s = Solution().treeQueries(tn, [3, 2, 4, 8])
+    # print(s)
+    # assert s == [3, 2, 3, 2]
 
-    lis = [5, 8, 9, 2, 1, 3, 7, 4, 6]
-    tn = to_tn(lis)
-    s = Solution().treeQueries(tn, [3, 2, 4, 8])
-    print(s)
-    assert s == [3, 2, 3, 2]
-
-    lis = [1, None, 5, None, None, 3, None, None, None, None, None, 2, 4]
+    # lis = [1, None, 5, 3, None, 2, 4]
     #         1
     #      -    5
     #     - -  3 -
     #    ---- 24--
-    tn = to_tn(lis)
-    s = Solution().treeQueries(tn, [3, 5, 4, 2, 4])
+    # tn = to_tn_2(lis)
+    # s = Solution().treeQueries(tn, [3, 5, 4, 2, 4])
+    # print(s)
+    # assert s == [1, 0, 3, 3, 3]
+
+    print(f"len(LIS)...")
+    print(f"{len(LIS)}...")
+
+    print(f"len(QUERIES)...")
+    print(f"{len(QUERIES)}...")
+
+    tn = to_tn_2(LIS)
+
+    s = Solution().treeQueries(tn, QUERIES[:1000])
     print(s)
-    assert s == [1, 0, 3, 3, 3]
