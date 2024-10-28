@@ -9,18 +9,18 @@ def idx(char: str) -> int:
 class Node:
     def __init__(self, word, i=0) -> None:
         self.char = word[i]
-        self.word = None
+        self.end = False
         self.next: list[Optional[Node]] = [None] * 26
 
         if i < len(word) - 1:
             next = Node(word, i + 1)
             self.next[idx(word[i + 1])] = next
         else:
-            self.word = word
+            self.end = True
 
     def insert(self, word, i=0):
         if i == len(word) - 1:
-            self.word = word
+            self.end = True
             return
 
         elif self.next[idx(word[i + 1])] is None:
@@ -33,7 +33,7 @@ class Node:
             return
 
     def exists(self, word, i=0):
-        if self.word == word:
+        if i == len(word) - 1 and self.end:
             return True
 
         if i + 1 < len(word) and self.next[idx(word[i + 1])] is not None:
