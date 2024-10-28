@@ -8,7 +8,6 @@ def idx(char: str) -> int:
 
 class Node:
     def __init__(self, word, i=0) -> None:
-        self.char = word[i]
         self.end = False
         self.next: list[Optional[Node]] = [None] * 26
 
