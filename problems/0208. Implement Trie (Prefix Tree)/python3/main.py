@@ -1,19 +1,10 @@
-from typing import Optional
-
-
-def idx(char: str) -> int:
-    assert len(char) == 1
-    return ord(char) - ord("a")
-
-
 class Node:
     def __init__(self, word, i=0) -> None:
         self.end = False
-        self.next: list[Optional[Node]] = [None] * 26
+        self.next = dict()
 
         if i < len(word) - 1:
-            next = Node(word, i + 1)
-            self.next[idx(word[i + 1])] = next
+            self.next[word[i + 1]] = Node(word, i + 1)
         else:
             self.end = True
 
@@ -22,21 +13,20 @@ class Node:
             self.end = True
             return
 
-        elif self.next[idx(word[i + 1])] is None:
-            node = Node(word, i + 1)
-            self.next[idx(word[i + 1])] = node
+        elif word[i + 1] not in self.next:
+            self.next[word[i + 1]] = Node(word, i + 1)
             return
 
         else:
-            self.next[idx(word[i + 1])].insert(word, i + 1)
+            self.next[word[i + 1]].insert(word, i + 1)
             return
 
     def exists(self, word, i=0):
         if i == len(word) - 1 and self.end:
             return True
 
-        if i + 1 < len(word) and self.next[idx(word[i + 1])] is not None:
-            return self.next[idx(word[i + 1])].exists(word, i + 1)
+        if i + 1 < len(word) and word[i + 1] in self.next:
+            return self.next[word[i + 1]].exists(word, i + 1)
 
         return False
 
@@ -44,44 +34,44 @@ class Node:
         if i == len(word) - 1:
             return True
 
-        if self.next[idx(word[i + 1])] is None:
+        if word[i + 1] not in self.next:
             return False
 
-        return self.next[idx(word[i + 1])].prefix(word, i + 1)
+        return self.next[word[i + 1]].prefix(word, i + 1)
 
 
 class Trie:
     def __init__(self):
-        self.tree: list[Optional[Node]] = [None] * 26
+        self.tree = dict()
 
     def insert(self, word: str) -> None:
         if not word:
             return
 
-        if self.tree[idx(word[0])] is not None:
-            self.tree[idx(word[0])].insert(word)
+        if word[0] in self.tree:
+            self.tree[word[0]].insert(word)
         else:
             # will initialize the word in the tree
-            self.tree[idx(word[0])] = Node(word)
+            self.tree[word[0]] = Node(word)
 
     def search(self, word: str) -> bool:
         # word is empty
         if not word:
             return True
 
-        if self.tree[idx(word[0])] is None:
+        if word[0] not in self.tree:
             return False
 
-        return self.tree[idx(word[0])].exists(word)
+        return self.tree[word[0]].exists(word)
 
     def startsWith(self, prefix: str) -> bool:
         if not prefix:
             return True
 
-        if self.tree[idx(prefix[0])] is None:
+        if prefix[0] not in self.tree:
             return False
 
-        return self.tree[idx(prefix[0])].prefix(prefix)
+        return self.tree[prefix[0]].prefix(prefix)
 
 
 # Your Trie object will be instantiated and called as such:
@@ -105,6 +95,7 @@ if __name__ == "__main__":
     assert t.search("")
 
     t = Trie()
+    assert not t.startsWith("a")
     t.insert("apple")
     assert t.search("apple")
     assert not t.search("app")
