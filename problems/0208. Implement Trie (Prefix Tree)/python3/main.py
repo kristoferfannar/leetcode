@@ -1,43 +1,7 @@
 class Node:
     def __init__(self, word, i=0) -> None:
-        self.end = False
         self.next = dict()
-
-        if i < len(word) - 1:
-            self.next[word[i + 1]] = Node(word, i + 1)
-        else:
-            self.end = True
-
-    def insert(self, word, i=0):
-        if i == len(word) - 1:
-            self.end = True
-            return
-
-        elif word[i + 1] not in self.next:
-            self.next[word[i + 1]] = Node(word, i + 1)
-            return
-
-        else:
-            self.next[word[i + 1]].insert(word, i + 1)
-            return
-
-    def exists(self, word, i=0):
-        if i == len(word) - 1 and self.end:
-            return True
-
-        if i + 1 < len(word) and word[i + 1] in self.next:
-            return self.next[word[i + 1]].exists(word, i + 1)
-
-        return False
-
-    def prefix(self, word, i=0):
-        if i == len(word) - 1:
-            return True
-
-        if word[i + 1] not in self.next:
-            return False
-
-        return self.next[word[i + 1]].prefix(word, i + 1)
+        self.end = i == len(word) - 1
 
 
 class Trie:
@@ -45,33 +9,38 @@ class Trie:
         self.tree = dict()
 
     def insert(self, word: str) -> None:
-        if not word:
-            return
+        cur = self.tree
 
-        if word[0] in self.tree:
-            self.tree[word[0]].insert(word)
-        else:
-            # will initialize the word in the tree
-            self.tree[word[0]] = Node(word)
+        for i, char in enumerate(word):
+            if char not in cur:
+                cur[char] = Node(word, i)
+
+            if i == len(word) - 1:
+                cur[char].end = True
+
+            cur = cur[char].next
 
     def search(self, word: str) -> bool:
-        # word is empty
-        if not word:
-            return True
+        cur_node = self
+        cur = self.tree
 
-        if word[0] not in self.tree:
-            return False
+        for char in word:
+            if char not in cur:
+                return False
+            cur_node = cur[char]
+            cur = cur_node.next
 
-        return self.tree[word[0]].exists(word)
+        return cur_node == self or cur_node.end
 
     def startsWith(self, prefix: str) -> bool:
-        if not prefix:
-            return True
+        cur = self.tree
 
-        if prefix[0] not in self.tree:
-            return False
+        for char in prefix:
+            if char not in cur:
+                return False
+            cur = cur[char].next
 
-        return self.tree[prefix[0]].prefix(prefix)
+        return True
 
 
 # Your Trie object will be instantiated and called as such:
