@@ -3,25 +3,17 @@ from typing import List
 
 class Solution:
     def findMinArrowShots(self, points: List[List[int]]) -> int:
-        shots = 0
-        spoints = sorted(points)
+        shots = 1
+        points.sort()
 
-        while spoints:
-            l, r = spoints[0]
-            included = 1
+        r = points[0][1]
 
-            while included < len(spoints):
-                nl, nr = spoints[included]
-
-                if nl > r:
-                    break
-
-                l = max(l, nl)
-                r = min(r, nr)
-                included += 1
-
-            spoints = spoints[included:]
-            shots += 1
+        for point in points[1:]:
+            if point[0] > r:
+                shots += 1
+                r = point[1]
+            else:
+                r = min(r, point[1])
 
         return shots
 
