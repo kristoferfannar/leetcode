@@ -2,28 +2,16 @@ from typing import List
 
 
 class Solution:
-    def __find(self, numbers: List[int], target, l) -> int:
-        h = len(numbers) - 1
-
-        # print(f"target-{target}")
-
-        while l <= h:
-            m = l + (h - l) // 2
-            # print(f"l-{l}, h-{h} | m-{m} (numbers[{m}] = {numbers[m]})")
-            if numbers[m] < target:
-                l = m + 1
-            elif numbers[m] > target:
-                h = m - 1
-            else:
-                return m
-
-        return -1
-
     def twoSum(self, numbers: List[int], target: int) -> List[int]:
-        for idx, num in enumerate(numbers):
-            found = self.__find(numbers, target - num, idx + 1)
-            if found != -1:
-                return [idx + 1, found + 1]
+        l, h = 0, len(numbers) - 1
+
+        while l < h:
+            if numbers[l] + numbers[h] < target:
+                l += 1
+            elif numbers[l] + numbers[h] > target:
+                h -= 1
+            else:
+                return [l + 1, h + 1]
 
         return []
 
