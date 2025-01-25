@@ -30,9 +30,6 @@ int main() {
   for (auto i : got)
     cout << i << " ";
   cout << endl;
-  // cout << "got: " << acc << endl;
-  // cout << "exp: " << accumulate(expected.begin(), expected.end(), string(""))
-  //      << endl;
 
   assert(got == expected);
 }
