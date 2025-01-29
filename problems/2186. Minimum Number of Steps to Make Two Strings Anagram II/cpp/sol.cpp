@@ -4,35 +4,16 @@ using namespace std;
 class Solution {
 public:
   int minSteps(string s, string t) {
-    map<char, int> sChars, tChars;
-    for (auto c : s) {
-      if (sChars.find(c) == sChars.end())
-        sChars[c] = 0;
+    vector<int> sChars(26), tChars(26);
+    for (auto c : s)
+      sChars[c - 'a']++;
 
-      sChars[c]++;
-    }
-
-    for (auto c : t) {
-      if (tChars.find(c) == tChars.end())
-        tChars[c] = 0;
-
-      tChars[c]++;
-    }
+    for (auto c : t)
+      tChars[c - 'a']++;
 
     int changes = 0;
-    for (auto [chr, count] : sChars) {
-      if (tChars.find(chr) != tChars.end())
-        changes += max(0, count - tChars[chr]);
-      else
-        changes += count;
-    }
-
-    for (auto [chr, count] : tChars) {
-      if (sChars.find(chr) != sChars.end())
-        changes += max(0, count - sChars[chr]);
-      else
-        changes += count;
-    }
+    for (int i = 0; i < 26; i++)
+      changes += max(tChars[i] - sChars[i], sChars[i] - tChars[i]);
 
     return changes;
   }
