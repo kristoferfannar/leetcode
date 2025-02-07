@@ -11,7 +11,6 @@ public:
       counter[i]++;
 
     priority_queue<int> q;
-
     for (auto [num, count] : counter)
       q.push(count);
 
@@ -21,9 +20,8 @@ public:
       rm += q.top();
       q.pop();
     }
-    // cout << "front: " << q.top().first << ", " << q.top().second << endl;
 
-    return counter.size() - q.size();
+    return (int)counter.size() - (int)q.size();
   }
 };
 
