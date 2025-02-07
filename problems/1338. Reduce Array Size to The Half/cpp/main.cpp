@@ -10,22 +10,16 @@ public:
     for (auto i : arr)
       counter[i]++;
 
-    auto cmp = [](pair<int, int> a, pair<int, int> b) {
-      return a.second < b.second;
-    };
-    priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(cmp)> q(
-        cmp);
+    priority_queue<int> q;
 
     for (auto [num, count] : counter)
-      q.push(pair(num, count));
+      q.push(count);
 
     int rm = 0;
 
     while (rm < (int)arr.size() / 2) {
-      auto [a, b] = q.top();
+      rm += q.top();
       q.pop();
-
-      rm += b;
     }
     // cout << "front: " << q.top().first << ", " << q.top().second << endl;
 
