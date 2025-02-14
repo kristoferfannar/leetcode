@@ -12,32 +12,17 @@ int digitSum(int num) {
 class Solution {
 public:
   int maximumSum(vector<int> &nums) {
-    map<int, vector<int>> counter;
+    map<int, int> counter;
+    int highest = INT_MIN;
 
     for (int i = 0; i < (int)nums.size(); i++) {
       int dSum = digitSum(nums[i]);
       if (counter.find(dSum) == counter.end()) {
-        counter[dSum] = {};
+        counter[dSum] = nums[i];
+      } else {
+        highest = max(highest, counter[dSum] + nums[i]);
+        counter[dSum] = max(counter[dSum], nums[i]);
       }
-      counter[dSum].push_back(nums[i]);
-    }
-    int highest = INT_MIN;
-    for (auto [dSum, vals] : counter) {
-      int first = INT_MIN, second = INT_MIN;
-
-      if (vals.size() <= 1)
-        continue;
-
-      for (auto val : vals) {
-        if (val > first) {
-          second = first;
-          first = val;
-        } else if (val > second) {
-          second = val;
-        }
-      }
-
-      highest = max(highest, first + second);
     }
 
     if (highest == INT_MIN)
