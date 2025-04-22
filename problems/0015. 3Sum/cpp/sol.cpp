@@ -3,8 +3,8 @@ using namespace std;
 
 class Solution {
   private:
-    int bsearch(vector<int> &nums, int target) {
-        int l = 0, h = nums.size() - 1, m;
+    int bsearch(vector<int> &nums, int left, int target) {
+        int l = left, h = nums.size() - 1, m;
 
         while (l <= h) {
             m = (l + h) / 2;
@@ -46,7 +46,7 @@ class Solution {
 
         for (int i = 0; i < snums.size(); i++) {
             for (int j = i + 1; j < snums.size(); j++) {
-                int target = bsearch(snums, -(snums[i] + snums[j]));
+                int target = bsearch(snums, j,  -(snums[i] + snums[j]));
 
                 if (target != -1) {
                     auto count = 1 + (snums[target] == snums[i]) +
@@ -70,3 +70,14 @@ class Solution {
         return vfound;
     }
 };
+
+int main() {
+	auto s = Solution();
+	vector<int> nums;
+	vector<vector<int>> out;
+
+	out = {{-1,-1,2},{-1,0,1}};
+	nums = {-1,0,1,2,-1,-4};
+	assert(s.threeSum(nums) == out);
+
+}
